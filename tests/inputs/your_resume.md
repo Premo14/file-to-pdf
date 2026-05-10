@@ -1,0 +1,49 @@
+# YOUR NAME
+[youremail@example.com](mailto:youremail@example.com) | [LinkedIn](https://linkedin.com) | [GitHub](https://github.com) | [Personal Website/Portfolio](https://anthonypremo.com)
+
+## Skills
+* **Skill Category 1:** Item 1, Item2, Item 3
+* **Skill Category 2:** Item 1, Item2, Item 3
+* **Skill Category 3:** Item 1, Item2, Item 3
+
+## Professional Experience
+
+### Experience 1
+*Month Year – Month Year* 
+
+*Job Title ( Location )*
+* Bullet 1
+* Bullet 2
+* Bullet 3
+
+### Experience 2
+*Month Year – Month Year* 
+
+*Job Title ( Location )*
+* Bullet 1
+* Bullet 2
+* Bullet 3
+
+## Projects
+
+### Project 1
+*Month Year – Month Year* 
+
+Project 1 Description  
+
+**Tools:** Tool 1, Tool 2, Tool 3
+
+### Project 2
+*Month Year – Month Year* 
+
+Project 2 Description  
+
+**Tools:** Tool 1, Tool 2, Tool 3
+
+## Education
+
+### Institution 1
+Degree 1 *Month Year – Month Year*
+
+### Institution 2
+Cert 1 *Month Year – Month Year*

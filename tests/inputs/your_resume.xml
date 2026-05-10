@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resume>
+    <header>
+        <name>YOUR NAME</name>
+        <contact>
+            <email url="mailto:youremail@example.com">youremail@example.com</email>
+            <linkedin url="https://linkedin.com">LinkedIn</linkedin>
+            <github url="https://github.com">GitHub</github>
+            <website url="https://anthonypremo.com">Personal Website/Portfolio</website>
+        </contact>
+    </header>
+    
+    <skills>
+        <category name="Skill Category 1">
+            <item>Item 1</item>
+            <item>Item 2</item>
+            <item>Item 3</item>
+        </category>
+        <category name="Skill Category 2">
+            <item>Item 1</item>
+            <item>Item 2</item>
+            <item>Item 3</item>
+        </category>
+        <category name="Skill Category 3">
+            <item>Item 1</item>
+            <item>Item 2</item>
+            <item>Item 3</item>
+        </category>
+    </skills>
+    
+    <experience>
+        <job>
+            <title>Experience 1</title>
+            <date>Month Year – Month Year</date>
+            <role>Job Title ( Location )</role>
+            <highlights>
+                <bullet>Bullet 1</bullet>
+                <bullet>Bullet 2</bullet>
+                <bullet>Bullet 3</bullet>
+            </highlights>
+        </job>
+        <job>
+            <title>Experience 2</title>
+            <date>Month Year – Month Year</date>
+            <role>Job Title ( Location )</role>
+            <highlights>
+                <bullet>Bullet 1</bullet>
+                <bullet>Bullet 2</bullet>
+                <bullet>Bullet 3</bullet>
+            </highlights>
+        </job>
+    </experience>
+    
+    <projects>
+        <project>
+            <title>Project 1</title>
+            <date>Month Year – Month Year</date>
+            <description>Project 1 Description</description>
+            <tools>Tool 1, Tool 2, Tool 3</tools>
+        </project>
+        <project>
+            <title>Project 2</title>
+            <date>Month Year – Month Year</date>
+            <description>Project 2 Description</description>
+            <tools>Tool 1, Tool 2, Tool 3</tools>
+        </project>
+    </projects>
+    
+    <education>
+        <institution name="Institution 1">
+            <degree>Degree 1</degree>
+            <date>Month Year – Month Year</date>
+        </institution>
+        <institution name="Institution 2">
+            <degree>Cert 1</degree>
+            <date>Month Year – Month Year</date>
+        </institution>
+    </education>
+</resume>

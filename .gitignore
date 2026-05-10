@@ -1,0 +1,13 @@
+# Binaries
+file-to-pdf
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Logs
+*.log
+
+# PDFs
+*.pdf
