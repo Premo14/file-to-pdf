@@ -9,8 +9,11 @@ const ResumeCSS = `
         line-height: 1.5;
         color: #000;
         margin: 0;
-        padding: 0.5in;
+        padding: 0.75in;
         background-color: #fff;
+    }
+    @page {
+        margin: 0.001in;
     }
     h1 {
         font-size: 26px;
@@ -88,12 +91,6 @@ const ResumeCSS = `
     a {
         color: #0000EE;
         text-decoration: underline;
-    }
-    @media print {
-        body {
-            padding: 0;
-            margin: 0;
-        }
     }
 `
 
