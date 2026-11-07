@@ -1,10 +1,12 @@
 package converter
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -14,7 +16,71 @@ func NewOfficeConverter() *OfficeConverter {
 	return &OfficeConverter{}
 }
 
+// findLibreOffice locates the LibreOffice / soffice executable across platforms
+func findLibreOffice() (string, error) {
+	// 1. Check custom environment variable
+	if envPath := os.Getenv("LIBREOFFICE_PATH"); envPath != "" {
+		if fi, err := os.Stat(envPath); err == nil && !fi.IsDir() {
+			return envPath, nil
+		}
+	}
+
+	// 2. Check PATH for standard binary names
+	for _, name := range []string{"libreoffice", "soffice"} {
+		if path, err := exec.LookPath(name); err == nil {
+			return path, nil
+		}
+	}
+
+	// 3. Platform-specific known locations
+	var candidates []string
+	if runtime.GOOS == "darwin" {
+		homeDir, _ := os.UserHomeDir()
+		candidates = []string{
+			"/Applications/LibreOffice.app/Contents/MacOS/soffice",
+			"/Applications/LibreOffice.app/Contents/MacOS/libreoffice",
+			filepath.Join(homeDir, "Applications/LibreOffice.app/Contents/MacOS/soffice"),
+			filepath.Join(homeDir, "Applications/LibreOffice.app/Contents/MacOS/libreoffice"),
+			"/opt/homebrew/bin/soffice",
+			"/opt/homebrew/bin/libreoffice",
+			"/usr/local/bin/soffice",
+			"/usr/local/bin/libreoffice",
+		}
+	} else if runtime.GOOS == "linux" {
+		candidates = []string{
+			"/usr/bin/libreoffice",
+			"/usr/bin/soffice",
+			"/usr/local/bin/libreoffice",
+			"/usr/local/bin/soffice",
+			"/snap/bin/libreoffice",
+		}
+	} else if runtime.GOOS == "windows" {
+		programFiles := os.Getenv("ProgramFiles")
+		programFilesX86 := os.Getenv("ProgramFiles(x86)")
+		candidates = []string{
+			filepath.Join(programFiles, "LibreOffice", "program", "soffice.exe"),
+			filepath.Join(programFilesX86, "LibreOffice", "program", "soffice.exe"),
+		}
+	}
+
+	for _, path := range candidates {
+		if fi, err := os.Stat(path); err == nil && !fi.IsDir() {
+			return path, nil
+		}
+	}
+
+	if runtime.GOOS == "darwin" {
+		return "", errors.New("libreoffice executable not found. On macOS, install it via 'brew install --cask libreoffice' or download from https://www.libreoffice.org/ (or set LIBREOFFICE_PATH)")
+	}
+	return "", errors.New("libreoffice/soffice executable not found in PATH or standard installation directories (or set LIBREOFFICE_PATH)")
+}
+
 func (c *OfficeConverter) Convert(inputPath, outputPath string) error {
+	binPath, err := findLibreOffice()
+	if err != nil {
+		return err
+	}
+
 	// 1. Convert Office doc to HTML using LibreOffice
 	tempDir, err := os.MkdirTemp("", "office-conv-*")
 	if err != nil {
@@ -27,7 +93,10 @@ func (c *OfficeConverter) Convert(inputPath, outputPath string) error {
 		return err
 	}
 
-	cmd := exec.Command("libreoffice", "--headless", "--convert-to", "html", "--outdir", tempDir, absInput)
+	// Use an isolated UserInstallation profile so it does not conflict with active LibreOffice sessions
+	profileURL := fmt.Sprintf("-env:UserInstallation=file://%s", filepath.ToSlash(filepath.Join(tempDir, "profile")))
+
+	cmd := exec.Command(binPath, profileURL, "--headless", "--convert-to", "html", "--outdir", tempDir, absInput)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("libreoffice error: %v, output: %s", err, string(output))

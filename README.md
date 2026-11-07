@@ -17,12 +17,36 @@ A generic Golang CLI application to convert various file formats to high-quality
 ## Requirements
 
 The application requires the following to be installed on the system:
-- **LibreOffice** (for Office document formats)
-- **Google Chrome** or **Chromium** (for HTML and Markdown formats)
+- **Go** (to build and run the application)
+- **Google Chrome**, **Chromium**, or **Brave** (for HTML, Markdown, XML, and text formats)
+- **LibreOffice** (for Office document formats: `.docx`, `.doc`, `.odt`, `.wps`, `.rtf`)
+
+### Installation on macOS
+```bash
+# Install Go (if not already installed)
+brew install go
+
+# Install LibreOffice (for Office formats)
+brew install --cask libreoffice
+
+# Install Google Chrome (if not already installed)
+brew install --cask google-chrome
+```
+
+### Environment Variable Overrides (Optional)
+- `CHROME_EXECUTABLE` / `CHROME_PATH`: Override path to a custom Chrome/Chromium/Brave executable.
+- `LIBREOFFICE_PATH`: Override path to LibreOffice binary (`soffice` or `libreoffice`). Automatically discovers `/Applications/LibreOffice.app/Contents/MacOS/soffice` on macOS.
 
 ## Usage
 
-### Build
+### Install Globally
+To use `file-to-pdf` anywhere from your terminal:
+```bash
+go install
+```
+*(Ensure `$GOPATH/bin` or `~/go/bin` is in your `$PATH`)*
+
+### Or Build Locally
 ```bash
 go build -o file-to-pdf main.go
 ```

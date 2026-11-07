@@ -15,9 +15,9 @@ type Converter interface {
 func GetConverter(inputPath string) (Converter, error) {
 	ext := strings.ToLower(filepath.Ext(inputPath))
 	switch ext {
-	case ".docx", ".doc", ".odt", ".wps", ".txt", ".rtf":
+	case ".docx", ".doc", ".odt", ".wps", ".rtf":
 		return NewOfficeConverter(), nil
-	case ".html", ".htm", ".md", ".markdown", ".xml":
+	case ".html", ".htm", ".md", ".markdown", ".xml", ".txt":
 		return NewWebConverter(), nil
 	default:
 		return nil, fmt.Errorf("unsupported file extension: %s", ext)

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"html"
 	"os"
 	"path/filepath"
 	"strings"
@@ -18,6 +19,18 @@ func NewWebConverter() *WebConverter {
 	return &WebConverter{}
 }
 
+// findChromeExecutable looks for user-specified browser binaries via environment variables
+func findChromeExecutable() string {
+	for _, envVar := range []string{"CHROME_EXECUTABLE", "CHROME_PATH"} {
+		if p := os.Getenv(envVar); p != "" {
+			if fi, err := os.Stat(p); err == nil && !fi.IsDir() {
+				return p
+			}
+		}
+	}
+	return ""
+}
+
 func (c *WebConverter) Convert(inputPath, outputPath string) error {
 	var htmlContent string
 	var err error
@@ -28,6 +41,13 @@ func (c *WebConverter) Convert(inputPath, outputPath string) error {
 		htmlContent, err = MarkdownToHTML(inputPath)
 	case ".xml":
 		htmlContent, err = XMLToHTML(inputPath)
+	case ".txt":
+		data, readErr := os.ReadFile(inputPath)
+		if readErr != nil {
+			return readErr
+		}
+		escaped := html.EscapeString(string(data))
+		htmlContent = WrapInHTML(fmt.Sprintf("<pre style=\"white-space: pre-wrap; word-wrap: break-word; font-family: inherit; font-size: 13px; line-height: 1.5; margin: 0;\">%s</pre>", escaped))
 	case ".html", ".htm":
 		data, readErr := os.ReadFile(inputPath)
 		if readErr != nil {
@@ -64,8 +84,17 @@ func (c *WebConverter) Convert(inputPath, outputPath string) error {
 		return err
 	}
 
+	// Create allocator context with custom browser path if provided
+	allocOpts := chromedp.DefaultExecAllocatorOptions[:]
+	if customChrome := findChromeExecutable(); customChrome != "" {
+		allocOpts = append(allocOpts, chromedp.ExecPath(customChrome))
+	}
+
+	allocCtx, allocCancel := chromedp.NewExecAllocator(context.Background(), allocOpts...)
+	defer allocCancel()
+
 	// Create context
-	ctx, cancel := chromedp.NewContext(context.Background())
+	ctx, cancel := chromedp.NewContext(allocCtx)
 	defer cancel()
 
 	var buf []byte
@@ -86,7 +115,7 @@ func (c *WebConverter) Convert(inputPath, outputPath string) error {
 	)
 
 	if err != nil {
-		return fmt.Errorf("chromedp error: %v", err)
+		return fmt.Errorf("chromedp error: %w (ensure Google Chrome, Chromium, or Brave is installed, or set CHROME_EXECUTABLE)", err)
 	}
 
 	if err := os.WriteFile(outputPath, buf, 0644); err != nil {
